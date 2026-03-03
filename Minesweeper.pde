@@ -53,11 +53,27 @@ public boolean isWon()
 }
 public void displayLosingMessage()
 {
-  buttons[NUM_ROWS/2][NUM_COLS/2].setLabel("Lose");
+  String lose = new String("Exploded");
+  for(int i = 0; i < NUM_ROWS; i++){
+    for(int j = 0; j < NUM_COLS; j++){
+      buttons[i][j].setLabel("");
+    }
+  }
+  for(int i = 0; i < lose.length(); i++){
+    buttons[NUM_ROWS/2][NUM_COLS/2 - lose.length()/2 + i].setLabel(lose.substring(i,i+1));
+  }
 }
 public void displayWinningMessage()
 {
-  buttons[NUM_ROWS/2][NUM_COLS/2].setLabel("Win");
+  String win = new String("You Win!");
+  for(int i = 0; i < NUM_ROWS; i++){
+    for(int j = 0; j < NUM_COLS; j++){
+      buttons[i][j].setLabel("");
+    }
+  }
+  for(int i = 0; i < win.length(); i++){
+    buttons[NUM_ROWS/2][NUM_COLS/2 - win.length()/2 + i].setLabel(win.substring(i,i+1));
+  }
 }
 public boolean isValid(int r, int c)
 {
@@ -106,12 +122,20 @@ public class MSButton
     if(mines.size() == 0){
       setMines(NUM_ROWS*NUM_COLS/8, myRow, myCol);
     }
+    if(clicked && flagged && this == buttons[0][0]){
+      for(MSButton mine : mines){
+        mine.setFlagged();
+      }
+    }
     if(mouseButton == RIGHT){
+      if(flagged) clicked = false;
       flagged = (flagged)? false:true;
-      clicked = false;
     }
     else if(mines.contains(this)){
       displayLosingMessage();
+      for(MSButton mine : mines){
+        if(!mine.isClicked()) mine.mousePressed();
+      }
     }
     else if(countMines(myRow, myCol) > 0){
       setLabel(countMines(myRow, myCol));
@@ -154,6 +178,10 @@ public class MSButton
   public boolean isFlagged()
   {
     return flagged;
+  }
+  public void setFlagged()
+  {
+    flagged = true;
   }
   public boolean isClicked()
   {
