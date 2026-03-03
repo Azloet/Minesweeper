@@ -21,11 +21,11 @@ void setup ()
 }
 public void setMines(int n, int r, int c)
 {
-  if(n == 0 || mines.size() == NUM_ROWS*NUM_COLS) return;
+  if(n == 0 || mines.size() >= NUM_ROWS*NUM_COLS) return;
   int row = (int)(Math.random()*NUM_ROWS);
   int col = (int)(Math.random()*NUM_COLS);
   MSButton mine = buttons[row][col];
-  if((row == r && col == c) || mines.contains(mine)){
+  if((abs(r - row) <= 1 && abs(c - col) <= 1) || mines.contains(mine)){
     setMines(n, r, c);
   }
   else{
@@ -108,7 +108,7 @@ public class MSButton
     }
     if(mouseButton == RIGHT){
       flagged = (flagged)? false:true;
-      if(flagged) clicked = false;
+      clicked = false;
     }
     else if(mines.contains(this)){
       displayLosingMessage();
